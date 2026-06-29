@@ -432,11 +432,40 @@ function saveVoiceSettings() {
   try { localStorage.setItem(VOICE_KEY, JSON.stringify(voiceSettings)); } catch (e) { /* yok say */ }
 }
 
-// Sesli yanıt (cihaz destekliyorsa) + konuşurken metni sohbet alanında gösterir
-function speakWithTranscript(spokenText, shownText) {
-  addBubble(shownText, 'assistant'); // "konuşurken onun söylediklerinin deşifresi"
+// Sesli yanıt: Google'ın (resmi olmayan ama doğal) sesli okuma servisini
+// kullanıyoruz. Başarısız olursa tarayıcının kendi sesine geri döner.
+const ttsAudio = new Audio();
+let ttsQueue = [];
+
+function stopAudioPlayback() {
+  ttsAudio.pause();
+  ttsAudio.removeAttribute('src');
+  ttsQueue = [];
+}
+
+function playNextInQueue() {
+  if (!ttsQueue.length) return;
+  ttsAudio.src = ttsQueue.shift();
+  ttsAudio.play().catch(() => { /* otomatik oynatma engellenmiş olabilir, sessizce geç */ });
+}
+ttsAudio.addEventListener('ended', playNextInQueue);
+
+async function fetchTtsUrls(text) {
+  try {
+    const res = await fetch(`${API_BASE}/api/tts?text=${encodeURIComponent(text)}&lang=tr`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data.urls || !data.urls.length) return null;
+    return data.urls.map((u) => `${API_BASE}${u}`);
+  } catch (e) {
+    return null;
+  }
+}
+
+// Tarayıcının kendi sesi (yedek plan - Google TTS'e ulaşılamazsa kullanılır)
+function speakBrowserFallback(text) {
   if (!('speechSynthesis' in window)) return;
-  const utter = new SpeechSynthesisUtterance(spokenText);
+  const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'tr-TR';
   utter.rate = voiceSettings.rate;
   utter.pitch = voiceSettings.pitch;
@@ -447,6 +476,24 @@ function speakWithTranscript(spokenText, shownText) {
   }
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(utter);
+}
+
+// Sesli yanıt + konuşurken metni sohbet alanında gösterir
+function speakWithTranscript(spokenText, shownText) {
+  addBubble(shownText, 'assistant'); // "konuşurken onun söylediklerinin deşifresi"
+  stopAudioPlayback();
+  window.speechSynthesis && window.speechSynthesis.cancel();
+
+  fetchTtsUrls(spokenText).then((urls) => {
+    if (urls) {
+      ttsAudio.volume = voiceSettings.volume;
+      ttsAudio.playbackRate = voiceSettings.rate; // bu motor "pitch" desteklemiyor, sadece hız uygulanır
+      ttsQueue = urls;
+      playNextInQueue();
+    } else {
+      speakBrowserFallback(spokenText); // Google'a ulaşılamadıysa tarayıcı sesine düş
+    }
+  });
 }
 
 function speak(text) {
