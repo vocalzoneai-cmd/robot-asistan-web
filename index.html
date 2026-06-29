@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Asistan</title>
+<meta name="theme-color" content="#15161a" />
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Asistan" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<main class="app">
+  <header class="topbar">
+    <span class="dot" id="connDot"></span>
+    <span id="connText">Bağlanıyor…</span>
+  </header>
+
+  <section class="face-wrap" id="faceWrap">
+    <div class="face" id="face">
+      <div class="eye-group">
+        <div class="brow" id="browL"></div>
+        <div class="eye" id="eyeL"></div>
+      </div>
+      <div class="eye-group">
+        <div class="brow" id="browR"></div>
+        <div class="eye" id="eyeR"></div>
+      </div>
+    </div>
+    <p class="status" id="status">Bekliyorum</p>
+  </section>
+
+  <section class="asset-wrap" id="assetWrap">
+    <button type="button" class="asset-close" id="assetClose" aria-label="Kapat">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <div class="asset-content" id="assetContent"></div>
+  </section>
+
+  <section class="chat-wrap">
+    <div class="chat-log" id="chatLog"></div>
+
+    <form class="inputbar" id="form">
+      <button type="button" class="mic" id="micBtn" aria-label="Sesle sor">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+      </button>
+      <button type="button" class="camera" id="cameraBtn" aria-label="Kamerayı aç">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+          <circle cx="12" cy="13" r="4"/>
+        </svg>
+      </button>
+      <input type="text" id="q" placeholder="Mesleki veya meraklı bir soru sor…" autocomplete="off" />
+      <button type="submit" class="send" aria-label="Gönder">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </form>
+  </section>
+
+  <canvas id="captureCanvas" style="display:none"></canvas>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

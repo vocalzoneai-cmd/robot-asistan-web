@@ -1,0 +1,24 @@
+{
+  "name": "Asistan",
+  "short_name": "Asistan",
+  "description": "Mesleki ve meraklı sorularına cevap veren kişisel asistan",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#15161a",
+  "theme_color": "#15161a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
